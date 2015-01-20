@@ -1,0 +1,14 @@
+{
+	"tasks" : {
+		"storage" : [
+			{ 
+				"cron_time" : "*/1 * * * *",
+				"comand" : "test1"
+			},
+			{ 
+				"cron_time" : "*/10 * * * *",
+				"comand" : "test2"
+			},
+		]
+	}
+}
