@@ -3,12 +3,13 @@
 		"storage" : [
 			{ 
 				"cron_time" : "*/1 * * * *",
-				"comand" : "test1"
+				"command" : "test1"
 			},
 			{ 
 				"cron_time" : "*/10 * * * *",
-				"comand" : "test2"
+				"command" : "test2"
 			},
 		]
-	}
+	},
+    "gearman" : "localhost"
 }

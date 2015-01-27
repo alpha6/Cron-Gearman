@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
 		'Config::JSON' => 0,
 		'Algorithm::Cron' => 0,
 		'Carp' => 0,
+        'AnyEvent::Gearman::Client' => 0,
 
    	}
 );
