@@ -1,0 +1,20 @@
+{
+	"tasks" : {
+		"storage" : [
+			{ 
+				"cron_time" : "*/10 * * * *",
+				"command" : "test2",
+                "args" : { 
+                    "command":"ls",
+                    "args" : "-l"        
+                } 
+			},
+			{ 
+				"cron_time" : "*/1 * * * *",
+				"command" : "test1",
+                "args" : { "option2":"value2" }
+			},
+		]
+	},
+    "gearman" : "localhost"
+}

@@ -8,7 +8,7 @@ use Carp;
 use Algorithm::Cron;
 use AnyEvent;
 use AnyEvent::Gearman::Client;
-
+use JSON;
 
 use Data::Dumper;
 use Cron::Gearman::DB;
@@ -87,28 +87,27 @@ sub _install_timer {
 
 	my $delay = $self->_get_start_timeout($task->{'cron_time'});
 	my $command = $task->{'command'};
+    my $args = $task->{'args'} || {};
 
 	#Создаем ключ по которому будет храниться таймер в таблице таймеров
 	my $timer_id = sprintf('%d_%d', $delay, int(rand(10000)));
 
-    warn "installing timer [$timer_id][$delay][$command]";
 	my $watcher = AnyEvent->timer(after => $delay, cb => sub {
             #Создаем замыкание с клиентом геармана
             my $job;
             $job = $self->{'client'}->add_task(
-                $command => '{}',
+                $command => encode_json($args),
                 on_complete => sub {
                     my $result = $_[1];
-                    $callback->($result);
+                    $callback->({ command => $command, result => $result, state => 1});
                     undef $job;
                 },
                 on_fail => sub {
                     my $result = $_[1];
-                    $callback->("job failed!".$result);
+                    $callback->({ command => $command, result => $result, state => 0});
                     undef $job;
                 }
             );
-#		$callback->($command); #Выполняем то, что хотел пользователь
 		$self->_install_timer($task, $callback); #Переустанавливаем таймер
         delete $self->{'timers'}{$timer_id}; #Удаляем текущий таймер из таблицы таймеров
 	});

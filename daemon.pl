@@ -30,6 +30,6 @@ my $gearman = $config->get('gearman');
 $cron = Cron::Gearman->new($config, $gearman);
 $cron->start($work_cb);
 
-warn Dumper($cron);
+#warn Dumper($cron);
 
 $cv->recv;
