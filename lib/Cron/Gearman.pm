@@ -86,8 +86,8 @@ sub _install_timer {
 	croak ("callback sub required!") unless (ref($callback) eq 'CODE');
 
 	my $delay = $self->_get_start_timeout($task->{'cron_time'});
-	my $command = $task->{'command'};
-    my $args = $task->{'args'} || {};
+	my $function = $task->{'function'}; #Функция которую отслеживает воркер
+    my $args = $task->{'args'} || {}; #Аргументы для функции
 
 	#Создаем ключ по которому будет храниться таймер в таблице таймеров
 	my $timer_id = sprintf('%d_%d', $delay, int(rand(10000)));
@@ -96,15 +96,15 @@ sub _install_timer {
             #Создаем замыкание с клиентом геармана
             my $job;
             $job = $self->{'client'}->add_task(
-                $command => encode_json($args),
+                $function => encode_json($args),
                 on_complete => sub {
                     my $result = $_[1];
-                    $callback->({ command => $command, result => $result, state => 1});
+                    $callback->({ function => $function, result => $result, state => 1});
                     undef $job;
                 },
                 on_fail => sub {
                     my $result = $_[1];
-                    $callback->({ command => $command, result => $result, state => 0});
+                    $callback->({ function => $function, result => $result, state => 0});
                     undef $job;
                 }
             );
